@@ -1,4 +1,3 @@
-///<reference path="../Clases/Empleado.ts" />
 if (localStorage.getItem("Empleados") == null)
     localStorage.setItem("Empleados", "Pepe-101,Juan-102");
 function Loguear() {
@@ -7,6 +6,7 @@ function Loguear() {
     var emp = localStorage.getItem("Empleados");
     var array_emp = Array();
     var array_datos = Array();
+    var array_terminado = Array();
     nombre = document.getElementById("nombreTxt").value;
     legajo = document.getElementById("legajoTxt").value;
     if (emp != null) {
@@ -14,20 +14,23 @@ function Loguear() {
     }
     array_emp.forEach(function (obj) {
         array_datos = obj.split("-");
+        array_datos.forEach(function (element) {
+            array_terminado.push(element);
+        });
     });
-    /*for(var i=0; i<array_datos.length; i++){
-        console.log("split " + array_datos[i]);
-        console.log("split " + array_datos[i+1]);
-        console.log(nombre);
-        console.log(legajo);
-         
-        if(array_datos[i] == nombre && array_datos[i+1] == legajo){
-            alert("Son iguales");
+    var flag;
+    for (var i = 0; i < array_terminado.length; i++) {
+        if (array_terminado[i] == nombre && array_terminado[i + 1] == legajo) {
+            flag = true;
             break;
-            //window.location.href="./principal.html";
         }
-        else{
-            alert("No son iguales");
+        else {
+            flag = false;
         }
-    }*/
+    }
+    if (flag) {
+    }
+    else {
+        alert("no son iguales forro");
+    }
 }
