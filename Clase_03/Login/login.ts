@@ -10,7 +10,6 @@ function Loguear():void{
     var array_terminado = Array();
     nombre = (<HTMLInputElement>document.getElementById("nombreTxt")).value;
     legajo = (<HTMLInputElement>document.getElementById("legajoTxt")).value;
-    
     if(emp != null){
         array_emp = emp.split(",");
     }
@@ -21,7 +20,7 @@ function Loguear():void{
             array_terminado.push(element);
         }); 
     });
-    var flag;
+    var flag = false;
     for(var i=0; i<array_terminado.length; i++){
         if(array_terminado[i] == nombre && array_terminado[i+1] == legajo){
             flag = true;
@@ -33,9 +32,9 @@ function Loguear():void{
     }
     
     if(flag){
-        window.location.replace("https://www.google.com");
+        window.location.href = 'home.html';
     }
     else{
-        alert("no son iguales forro");
+        alert("no son iguales");
     }
 }

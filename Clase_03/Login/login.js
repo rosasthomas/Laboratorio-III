@@ -18,7 +18,7 @@ function Loguear() {
             array_terminado.push(element);
         });
     });
-    var flag;
+    var flag = false;
     for (var i = 0; i < array_terminado.length; i++) {
         if (array_terminado[i] == nombre && array_terminado[i + 1] == legajo) {
             flag = true;
@@ -29,8 +29,9 @@ function Loguear() {
         }
     }
     if (flag) {
+        window.location.href = 'home.html';
     }
     else {
-        alert("no son iguales forro");
+        alert("no son iguales");
     }
 }
