@@ -1,5 +1,3 @@
-import { Loguear } from "./login";
-
 function mostrar(){
     var http = new XMLHttpRequest();
     http.open("POST", "administracion.php", true);
@@ -12,7 +10,19 @@ function mostrar(){
         }
     };
 }
+
+function loguear() : boolean{
+    var http = new XMLHttpRequest();
+    http.open("POST", "verificacion.php", true);
+    var $flag = false;
+    if(http.response == "ok"){
+       $flag = true;
+    }
+    
+    return $flag;
+}
 window.onload=function(){
-    Loguear();
-    mostrar();
+    if(loguear()){
+        mostrar();
+    }
 };

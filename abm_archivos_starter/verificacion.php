@@ -1,11 +1,10 @@
 <?php
 session_start();
-    if(isset($_SESSION["usuario"])){
-        if($_SESSION["usuario"] == "ok"){
-            
-        }
-        else{
-            header("location=login.php");
-        }
+    if(isset($_SESSION["usuario"]) && $_SESSION["usuario"] == "ok"){
+            echo "ok";
     }
+        else{
+            $_SESSION["usuario"] = "ok";
+            header("location=login.php");
+        }   
    
