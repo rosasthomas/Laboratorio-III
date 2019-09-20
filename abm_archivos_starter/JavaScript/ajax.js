@@ -15,14 +15,15 @@ function loguear() {
     http.setRequestHeader("content-type", "application/x-www-form-urlencoded");
     http.send("usuario=logueado");
     var flag = false;
-    console.log(http.responseText);
     http.onreadystatechange = function () {
         if (http.readyState == 4 && http.status == 200) {
             if (http.responseText == "ok") {
+                alert("resp:" + http.responseText);
                 flag = true;
             }
         }
     };
+    alert(flag);
     return flag;
 }
 window.onload = function () {
