@@ -14,6 +14,7 @@ namespace PrimerParcial{
     }
     export class Manejadora implements IParte2, IParte3{
         public static AgregarPerroJSON(){
+            if(Manejadora.AdministrarValidaciones()){
             let tamaño : string =(<HTMLInputElement> document.getElementById("tamaño")).value;
             let edad : string =(<HTMLInputElement> document.getElementById("edad")).value;
             let precio : string =(<HTMLInputElement> document.getElementById("precio")).value;
@@ -52,6 +53,10 @@ namespace PrimerParcial{
                     }
                 
             });
+        }
+        else{
+            alert("Hay campos vacios");
+        }
 
         }
 
@@ -119,65 +124,69 @@ namespace PrimerParcial{
         }
 
         public static AgregarPerroEnBaseDatos(){
-            let tamaño : string =(<HTMLInputElement> document.getElementById("tamaño")).value;
-            let edad : string =(<HTMLInputElement> document.getElementById("edad")).value;
-            let precio : string =(<HTMLInputElement> document.getElementById("precio")).value;
-            let nombre : string =(<HTMLInputElement> document.getElementById("nombre")).value;
-            let raza : string = (<HTMLSelectElement> document.getElementById("raza")).value; 
-            let foto : any = (<HTMLInputElement>document.getElementById("foto")); 
-            let path : any = (<HTMLInputElement>document.getElementById("foto")).value; 
+            if(Manejadora.AdministrarValidaciones()){
+                let tamaño : string =(<HTMLInputElement> document.getElementById("tamaño")).value;
+                let edad : string =(<HTMLInputElement> document.getElementById("edad")).value;
+                let precio : string =(<HTMLInputElement> document.getElementById("precio")).value;
+                let nombre : string =(<HTMLInputElement> document.getElementById("nombre")).value;
+                let raza : string = (<HTMLSelectElement> document.getElementById("raza")).value; 
+                let foto : any = (<HTMLInputElement>document.getElementById("foto")); 
+                let path : any = (<HTMLInputElement>document.getElementById("foto")).value; 
 
-            let pathFoto : string = (path.split('\\'))[2];
+                let pathFoto : string = (path.split('\\'))[2];
 
-            let perro = new Entidades.Perro(tamaño, parseInt(edad), parseFloat(precio), nombre, raza, pathFoto);
-            
-            let form = new FormData();
-            form.append("foto",foto.files[0]);
-            form.append("cadenaJson",JSON.stringify(perro.ToJSON()));
+                let perro = new Entidades.Perro(tamaño, parseInt(edad), parseFloat(precio), nombre, raza, pathFoto);
+                
+                let form = new FormData();
+                form.append("foto",foto.files[0]);
+                form.append("cadenaJson",JSON.stringify(perro.ToJSON()));
 
-            let backend = "./BACKEND/agregar_bd.php";
-            if(localStorage.getItem("modificar")){
-                backend = "./BACKEND/modificar_bd.php";
-            }
-            $("#divTabla").html(`<img src="${}">`);
-            let ajax = $.ajax({
-
-                type: "POST",
-                url: backend,
-                cache: false,
-                contentType: false,
-                processData : false,
-                data: form,
-                dataType: "JSON"
-
-            })
-            ajax.done(function(response){
+                let backend = "./BACKEND/agregar_bd.php";
                 if(localStorage.getItem("modificar")){
-                    if(response.Ok){
-                        alert("Se modifico el perro");
-                        (<HTMLInputElement> document.getElementById("btnAgregarBd")).value = "Agregar en BD";
-                        Manejadora.MostrarPerrosBaseDatos();
-                        $("#precio").prop("disabled", false);
+                    backend = "./BACKEND/modificar_bd.php";
+                }
+                let ajax = $.ajax({
 
+                    type: "POST",
+                    url: backend,
+                    cache: false,
+                    contentType: false,
+                    processData : false,
+                    data: form,
+                    dataType: "JSON"
+
+                })
+                ajax.done(function(response){
+                    if(localStorage.getItem("modificar")){
+                        if(response.Ok){
+                            alert("Se modifico el perro");
+                            (<HTMLInputElement> document.getElementById("btnAgregarBd")).value = "Agregar en BD";
+                            Manejadora.MostrarPerrosBaseDatos();
+                            $("#precio").prop("disabled", false);
+
+                        }
+                        else{
+                            alert("No se modifico el perro");
+                            console.log("No se modifico el perro");
+                            (<HTMLInputElement> document.getElementById("btnAgregarBd")).value = "Agregar en BD";
+                            $("#precio").prop("disabled", false);
+                        }
                     }
                     else{
-                        alert("No se modifico el perro");
-                        console.log("No se modifico el perro");
-                        (<HTMLInputElement> document.getElementById("btnAgregarBd")).value = "Agregar en BD";
-                        $("#precio").prop("disabled", false);
+                        if(response.Ok){
+                            alert("Se guardo la foto");
+                        }
+                        else{
+                            alert("No se guardo la foto");
+                        }
                     }
-                }
-                else{
-                    if(response.Ok){
-                        alert("Se guardo la foto");
-                    }
-                    else{
-                        alert("No se guardo la foto");
-                    }
-                }
-               
-            })
-            localStorage.removeItem("modificar");
+                
+                })
+                localStorage.removeItem("modificar");
+            }
+            else{
+                alert("Hay errores en los campos");
+            }
         }
 
         public static VerificarExistencia(){
@@ -478,6 +487,72 @@ namespace PrimerParcial{
             if (flag)
                 (<HTMLImageElement>document.getElementById('imgSpinner')).setAttribute('src', './BACKEND/gif-load.gif');
         } 
+
+        public static AdministrarValidaciones(){
+            let todoOk:boolean = false;
+            let todosLosCamposCompletos:boolean = true;
+            let numeroValido:boolean = false;
+            let tipoValido:boolean = false;
+            let ids:string[] = ["tamaño", "edad", "precio", "nombre", "raza"];
+            let tipos:string[] = ["salchicha", "chihuahua", "pitbull", "caniche", "ovejero", "Salchicha", "Perro", "Ovejero", "Boxer", "Caniche toy", "Chihuahua"];
+            for (let index = 0; index < ids.length; index++) 
+            {
+                if(this.ValidarCamposVacios(ids[index]))
+                {
+                    (<HTMLSpanElement>(<HTMLSpanElement>document.getElementById(ids[index])).nextElementSibling).style.display="none";
+                }
+                else
+                {
+                    todosLosCamposCompletos = false;
+                    (<HTMLSpanElement>(<HTMLSpanElement>document.getElementById(ids[index])).nextElementSibling).style.display="inline";
+                }               
+            }
+            numeroValido = this.ValidarEdad(parseInt((<HTMLInputElement>document.getElementById("edad")).value));
+            tipoValido = this.ValidarRaza((<HTMLInputElement>document.getElementById("raza")).value, tipos);
+            if(!numeroValido)
+            {
+                (<HTMLSpanElement>(<HTMLSpanElement>document.getElementById("edad")).nextElementSibling).style.display="inline";
+            }
+            if(!tipoValido)
+            {
+                (<HTMLSpanElement>(<HTMLSpanElement>document.getElementById("raza")).nextElementSibling).style.display="inline";
+            }
+            if(todosLosCamposCompletos && numeroValido && tipoValido)
+            {
+                todoOk = true;
+            }
+            return todoOk;
+        }
+
+        public static ValidarCamposVacios(aux:string):boolean{
+            let flag = false;
+            if($(`#${aux}`).val() != ""){
+                flag = true;
+            }
+
+            return flag;
+        }
+
+        public static ValidarRaza(valor:string, permitidos:any[]):boolean{
+            let flag = false;
+            for (let raza of permitidos) {
+                if(valor === raza){
+                    flag = true;
+                    break;
+                }
+            }
+
+            return flag;
+        }
+
+        public static ValidarEdad(edad:number):boolean{
+            let flag = false;
+            if(edad >= 0 && edad < 18){
+                flag = true;
+            }
+
+            return flag;
+        }
              
 
     }

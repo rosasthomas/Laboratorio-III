@@ -54,36 +54,41 @@ var PrimerParcial;
         function Manejadora() {
         }
         Manejadora.AgregarPerroJSON = function () {
-            var tamaño = document.getElementById("tamaño").value;
-            var edad = document.getElementById("edad").value;
-            var precio = document.getElementById("precio").value;
-            var nombre = document.getElementById("nombre").value;
-            var raza = document.getElementById("raza").value;
-            var foto = document.getElementById("foto");
-            var path = document.getElementById("foto").value;
-            var pathFoto = (path.split('\\'))[2];
-            var perro = new Entidades.Perro(tamaño, parseInt(edad), parseFloat(precio), nombre, raza, pathFoto);
-            var xhr = new XMLHttpRequest();
-            var form = new FormData();
-            form.append("foto", foto.files[0]);
-            form.append("cadenaJson", JSON.stringify(perro.ToJSON()));
-            var ajax = $.ajax({
-                type: "POST",
-                url: "./BACKEND/agregar_json.php",
-                cache: false,
-                contentType: false,
-                processData: false,
-                data: form,
-                dataType: "JSON"
-            });
-            ajax.done(function (response) {
-                if (response.Ok) {
-                    alert("Se guardo la foto");
-                }
-                else {
-                    alert("No se guardo la foto");
-                }
-            });
+            if (Manejadora.AdministrarValidaciones()) {
+                var tamaño = document.getElementById("tamaño").value;
+                var edad = document.getElementById("edad").value;
+                var precio = document.getElementById("precio").value;
+                var nombre = document.getElementById("nombre").value;
+                var raza = document.getElementById("raza").value;
+                var foto = document.getElementById("foto");
+                var path = document.getElementById("foto").value;
+                var pathFoto = (path.split('\\'))[2];
+                var perro = new Entidades.Perro(tamaño, parseInt(edad), parseFloat(precio), nombre, raza, pathFoto);
+                var xhr = new XMLHttpRequest();
+                var form = new FormData();
+                form.append("foto", foto.files[0]);
+                form.append("cadenaJson", JSON.stringify(perro.ToJSON()));
+                var ajax = $.ajax({
+                    type: "POST",
+                    url: "./BACKEND/agregar_json.php",
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    data: form,
+                    dataType: "JSON"
+                });
+                ajax.done(function (response) {
+                    if (response.Ok) {
+                        alert("Se guardo la foto");
+                    }
+                    else {
+                        alert("No se guardo la foto");
+                    }
+                });
+            }
+            else {
+                alert("Hay campos vacios");
+            }
         };
         Manejadora.MostrarPerrosJSON = function () {
             var ajax = $.ajax({
@@ -138,57 +143,61 @@ var PrimerParcial;
             });
         };
         Manejadora.AgregarPerroEnBaseDatos = function () {
-            var tamaño = document.getElementById("tamaño").value;
-            var edad = document.getElementById("edad").value;
-            var precio = document.getElementById("precio").value;
-            var nombre = document.getElementById("nombre").value;
-            var raza = document.getElementById("raza").value;
-            var foto = document.getElementById("foto");
-            var path = document.getElementById("foto").value;
-            var pathFoto = (path.split('\\'))[2];
-            var perro = new Entidades.Perro(tamaño, parseInt(edad), parseFloat(precio), nombre, raza, pathFoto);
-            var form = new FormData();
-            form.append("foto", foto.files[0]);
-            form.append("cadenaJson", JSON.stringify(perro.ToJSON()));
-            var backend = "./BACKEND/agregar_bd.php";
-            if (localStorage.getItem("modificar")) {
-                backend = "./BACKEND/modificar_bd.php";
-            }
-            $("#divTabla").html("<img src=\"" +  + "\">");
-            var ajax = $.ajax({
-                type: "POST",
-                url: backend,
-                cache: false,
-                contentType: false,
-                processData: false,
-                data: form,
-                dataType: "JSON"
-            });
-            ajax.done(function (response) {
+            if (Manejadora.AdministrarValidaciones()) {
+                var tamaño = document.getElementById("tamaño").value;
+                var edad = document.getElementById("edad").value;
+                var precio = document.getElementById("precio").value;
+                var nombre = document.getElementById("nombre").value;
+                var raza = document.getElementById("raza").value;
+                var foto = document.getElementById("foto");
+                var path = document.getElementById("foto").value;
+                var pathFoto = (path.split('\\'))[2];
+                var perro = new Entidades.Perro(tamaño, parseInt(edad), parseFloat(precio), nombre, raza, pathFoto);
+                var form = new FormData();
+                form.append("foto", foto.files[0]);
+                form.append("cadenaJson", JSON.stringify(perro.ToJSON()));
+                var backend = "./BACKEND/agregar_bd.php";
                 if (localStorage.getItem("modificar")) {
-                    if (response.Ok) {
-                        alert("Se modifico el perro");
-                        document.getElementById("btnAgregarBd").value = "Agregar en BD";
-                        Manejadora.MostrarPerrosBaseDatos();
-                        $("#precio").prop("disabled", false);
+                    backend = "./BACKEND/modificar_bd.php";
+                }
+                var ajax = $.ajax({
+                    type: "POST",
+                    url: backend,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    data: form,
+                    dataType: "JSON"
+                });
+                ajax.done(function (response) {
+                    if (localStorage.getItem("modificar")) {
+                        if (response.Ok) {
+                            alert("Se modifico el perro");
+                            document.getElementById("btnAgregarBd").value = "Agregar en BD";
+                            Manejadora.MostrarPerrosBaseDatos();
+                            $("#precio").prop("disabled", false);
+                        }
+                        else {
+                            alert("No se modifico el perro");
+                            console.log("No se modifico el perro");
+                            document.getElementById("btnAgregarBd").value = "Agregar en BD";
+                            $("#precio").prop("disabled", false);
+                        }
                     }
                     else {
-                        alert("No se modifico el perro");
-                        console.log("No se modifico el perro");
-                        document.getElementById("btnAgregarBd").value = "Agregar en BD";
-                        $("#precio").prop("disabled", false);
+                        if (response.Ok) {
+                            alert("Se guardo la foto");
+                        }
+                        else {
+                            alert("No se guardo la foto");
+                        }
                     }
-                }
-                else {
-                    if (response.Ok) {
-                        alert("Se guardo la foto");
-                    }
-                    else {
-                        alert("No se guardo la foto");
-                    }
-                }
-            });
-            localStorage.removeItem("modificar");
+                });
+                localStorage.removeItem("modificar");
+            }
+            else {
+                alert("Hay errores en los campos");
+            }
         };
         Manejadora.VerificarExistencia = function () {
             var edad = document.getElementById("edad").value;
@@ -455,6 +464,60 @@ var PrimerParcial;
             }, 1000);
             if (flag)
                 document.getElementById('imgSpinner').setAttribute('src', './BACKEND/gif-load.gif');
+        };
+        Manejadora.AdministrarValidaciones = function () {
+            var todoOk = false;
+            var todosLosCamposCompletos = true;
+            var numeroValido = false;
+            var tipoValido = false;
+            var ids = ["tamaño", "edad", "precio", "nombre", "raza"];
+            var tipos = ["salchicha", "chihuahua", "pitbull", "caniche", "ovejero", "Salchicha", "Perro", "Ovejero", "Boxer", "Caniche toy", "Chihuahua"];
+            for (var index = 0; index < ids.length; index++) {
+                if (this.ValidarCamposVacios(ids[index])) {
+                    document.getElementById(ids[index]).nextElementSibling.style.display = "none";
+                }
+                else {
+                    todosLosCamposCompletos = false;
+                    document.getElementById(ids[index]).nextElementSibling.style.display = "inline";
+                }
+            }
+            numeroValido = this.ValidarEdad(parseInt(document.getElementById("edad").value));
+            tipoValido = this.ValidarRaza(document.getElementById("raza").value, tipos);
+            if (!numeroValido) {
+                document.getElementById("edad").nextElementSibling.style.display = "inline";
+            }
+            if (!tipoValido) {
+                document.getElementById("raza").nextElementSibling.style.display = "inline";
+            }
+            if (todosLosCamposCompletos && numeroValido && tipoValido) {
+                todoOk = true;
+            }
+            return todoOk;
+        };
+        Manejadora.ValidarCamposVacios = function (aux) {
+            var flag = false;
+            if ($("#" + aux).val() != "") {
+                flag = true;
+            }
+            return flag;
+        };
+        Manejadora.ValidarRaza = function (valor, permitidos) {
+            var flag = false;
+            for (var _i = 0, permitidos_1 = permitidos; _i < permitidos_1.length; _i++) {
+                var raza = permitidos_1[_i];
+                if (valor === raza) {
+                    flag = true;
+                    break;
+                }
+            }
+            return flag;
+        };
+        Manejadora.ValidarEdad = function (edad) {
+            var flag = false;
+            if (edad >= 0 && edad < 18) {
+                flag = true;
+            }
+            return flag;
         };
         return Manejadora;
     }());

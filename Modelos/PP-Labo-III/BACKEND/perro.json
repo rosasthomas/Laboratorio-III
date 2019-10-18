@@ -17,3 +17,5 @@
 {"nombre":"www","raza":"salchicha","pathFoto":"www.13203.jpg","tamanio":"chico","edad":"4","precio":"1222"}
 {"nombre":"www","raza":"salchicha","pathFoto":"www.13234.","tamanio":"chico","edad":"4","precio":"1222"}
 {"nombre":"Capo","raza":"salchicha","pathFoto":"Capo.200042.jpg","tamanio":"chico","edad":"3","precio":"3333"}
+{"nombre":"","raza":"salchicha","pathFoto":".52104.","tamanio":"","edad":"NaN","precio":"NaN"}
+{"nombre":"","raza":"salchicha","pathFoto":".52129.","tamanio":"","edad":"NaN","precio":"NaN"}
