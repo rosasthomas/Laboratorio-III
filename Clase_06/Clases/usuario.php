@@ -19,8 +19,8 @@ require_once "AccesoDatos.php";
             $extension= explode(".", $nombreAnterior)  ;
             $extension=array_reverse($extension);
             $path = $destino.date('d-m-y').".".$extension[0];
-            $archivos['foto']->moveTo($path);
-
+            $archivos['foto']->moveTo($path); 
+                
             return $path;
         }
 
@@ -80,10 +80,12 @@ require_once "AccesoDatos.php";
             $consulta->bindValue(':clave', $this->clave, PDO::PARAM_STR);
             $consulta->bindValue(':correo', $this->correo, PDO::PARAM_STR);
             $consulta->bindValue(':foto', $this->foto);
+            $flag = false;
+           if($consulta->execute()){
+               $flag = true;
+           }
 
-            $consulta->execute();
-
-            return $objetoAccesoDato->RetornarUltimoIdInsertado();
+            return $flag;
         }
         
         public function ModificarUsuario()
@@ -181,18 +183,17 @@ require_once "AccesoDatos.php";
     public function AgregarUno($request, $response, $args){
         $ArrayDeParametros = $request->getParsedBody();
         $usu = new Usuario();
+        $json = json_decode($ArrayDeParametros['usuario']);
         $path = Usuario::SubirFoto($request);
 
-	    $usu->nombre=$ArrayDeParametros['nombre'];
-	    $usu->apellido=$ArrayDeParametros['apellido'];
-        $usu->perfil=$ArrayDeParametros['perfil'];
-        $usu->correo=$ArrayDeParametros['correo'];
-        $usu->clave=$ArrayDeParametros['clave'];
+	    $usu->nombre=$json->nombre;
+	    $usu->apellido=$json->apellido;
+        $usu->perfil=$json->perfil;
+        $usu->correo=$json->correo;
+        $usu->clave=$json->clave;
         $usu->foto=$path;
         
-        $usu->InsertarElUsuario();
-
-        
+        $usu->exito = $usu->InsertarElUsuario();
 
         return $response->withJson($usu, 200);
     }

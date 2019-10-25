@@ -1,7 +1,7 @@
 /// <reference path="node_modules/@types/jquery/index.d.ts" />
 function comprobar() {
     var http = new XMLHttpRequest();
-    http.open("POST", "http://localhost/Clase_06/", true);
+    http.open("POST", "http://localhost/Clase_06/login/Ingresar/", true);
     http.setRequestHeader("content-type", "application/x-www-form-urlencoded");
     var correo = document.getElementById('correoTxt').value;
     var clave = document.getElementById("claveTxt").value;
@@ -10,7 +10,7 @@ function comprobar() {
     var respuesta;
     http.onreadystatechange = function () {
         if (http.readyState == 4 && http.status == 200) {
-            //respuesta = JSON.parse(http.responseText);
+            console.log(http.responseText);
             var response = JSON.parse(http.responseText);
             if (!response.existe) {
                 $("#divError").removeClass('entro');
@@ -28,7 +28,7 @@ function comprobar() {
 }
 function insertar() {
     var http = new XMLHttpRequest();
-    http.open("POST", "http://localhost/Clase_06/Registrar/", true);
+    http.open("POST", "http://localhost/Clase_06/login/Registrar/", true);
     http.setRequestHeader("enctype", "multipart/form-data");
     var form = new FormData();
     var nombre = document.getElementById("nombreTxt").value;
@@ -45,7 +45,18 @@ function insertar() {
     var respuesta;
     http.onreadystatechange = function () {
         if (http.readyState == 4 && http.status == 200) {
-            respuesta = http.responseText;
+            respuesta = JSON.parse(http.responseText);
+            console.log(respuesta);
+            if (respuesta.exito) {
+                $("#divError").removeClass('error');
+                $("#divError").addClass('entro');
+                $("#divError").html('El usuario se registro');
+            }
+            else {
+                $("#divError").removeClass('entro');
+                $("#divError").addClass('error');
+                $("#divError").html('ERROR: El usuario no se pudo registro');
+            }
             console.log(respuesta);
         }
     };

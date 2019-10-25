@@ -2,7 +2,7 @@
 
 function comprobar(){
     var http = new XMLHttpRequest();
-    http.open("POST", "http://localhost/Clase_06/", true);
+    http.open("POST", "http://localhost/Clase_06/login/Ingresar/", true);
     http.setRequestHeader("content-type","application/x-www-form-urlencoded");
     let correo = (<HTMLInputElement>document.getElementById('correoTxt')).value;
     let clave = (<HTMLInputElement>document.getElementById("claveTxt")).value;
@@ -11,7 +11,7 @@ function comprobar(){
     var respuesta;
     http.onreadystatechange = () => {
         if (http.readyState == 4 && http.status == 200) {
-            //respuesta = JSON.parse(http.responseText);
+            console.log(http.responseText);
             let response = JSON.parse(http.responseText);
             if(!response.existe){
                 $("#divError").removeClass('entro');
@@ -31,7 +31,7 @@ function comprobar(){
 }
 function insertar(){
     var http = new XMLHttpRequest();
-    http.open("POST", "http://localhost/Clase_06/Registrar/", true);
+    http.open("POST", "http://localhost/Clase_06/login/Registrar/", true);
     http.setRequestHeader("enctype", "multipart/form-data");
     let form : FormData = new FormData();
     let nombre = (<HTMLInputElement>document.getElementById("nombreTxt")).value;
@@ -51,7 +51,18 @@ function insertar(){
     var respuesta;
     http.onreadystatechange = () => {
         if (http.readyState == 4 && http.status == 200) {
-            respuesta = http.responseText;
+            respuesta = JSON.parse(http.responseText);
+            console.log(respuesta);
+            if(respuesta.exito){
+                $("#divError").removeClass('error');
+                $("#divError").addClass('entro');
+                $("#divError").html('El usuario se registro');
+            }
+            else{
+                $("#divError").removeClass('entro');
+                $("#divError").addClass('error');
+                $("#divError").html('ERROR: El usuario no se pudo registro');
+            }
             console.log(respuesta);
         }
     }

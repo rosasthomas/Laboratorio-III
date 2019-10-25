@@ -10,8 +10,8 @@ $config['addContentLengthHeader'] = false;
 
 $app = new \Slim\App(["settings" => $config]);
 
-$app->group('[/]',function(){
-    $this->post('', function (Request $request, Response $response) {   
+$app->group('/login/',function(){
+    $this->post('Ingresar[/]', function (Request $request, Response $response) {   
         $json = $request->getParsedBody();
         $json = json_decode($json['usuario']);
         $flag = Usuario::Validar($json->id, $json->clave);
@@ -25,7 +25,7 @@ $app->group('[/]',function(){
         return $retorno;
     });
 
-   // $this->post('/Registrar/', \Usuario::class . ':AgregarUno');
+    $this->post('Registrar/', \Usuario::class . ':AgregarUno');
 });
 
 
