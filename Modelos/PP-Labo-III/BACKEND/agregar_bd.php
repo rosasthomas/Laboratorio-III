@@ -6,7 +6,7 @@ $cadenaJSON = isset($_POST['cadenaJson']) ? $_POST['cadenaJson'] : null;
 $objJson = json_decode($cadenaJSON);    
 
 $extension = pathinfo($_FILES["foto"]["name"],PATHINFO_EXTENSION);
-$fecha=date("Gis");
+$fecha=date("h-m-s");
 $destino = "fotos/". $objJson->nombre ."." . $fecha. "." . $extension;
 
 $objJson->pathFoto=$objJson->nombre ."." . $fecha. "." . $extension;
